@@ -1,0 +1,15 @@
+{% extends "portfolio/base.html" %}
+{% block content %}
+    {% if from.errors %}
+    <br/>
+    <p>Please check your username and password. Your username and password is incorrect</p>
+    {% endif %}
+    <br/>
+    <br/>
+    <form method="POST" action = "{%url 'login'%}">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="login"/>
+        <input type="hidden" name="next" value="{{ next }}"/>
+    </form>
+{% endblock %}
