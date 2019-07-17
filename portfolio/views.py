@@ -41,6 +41,7 @@ def customer_delete(request, pk):
 
 @login_required
 def stock_list(request):
+   print('>>>Now: '+ str(timezone.now()))
    stocks = Stock.objects.filter(purchase_date__lte=timezone.now())
    return render(request, 'portfolio/stock_list.html', {'stocks': stocks})
 
