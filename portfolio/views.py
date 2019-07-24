@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login
 from django.utils import timezone
 from .models import Customer, Stock, Investment
-from .forms import CustomerForm, StockForm, InvestmentForm
+from .forms import CustomerForm, StockForm, InvestmentForm, UserForm
 from django.db.models import Sum
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,6 +15,22 @@ now = timezone.now()
 def home(request):
    return render(request, 'portfolio/home.html',
                  {'portfolio': home})
+
+def signup(request):
+    if request.method=="POST":
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user.set_password(password)
+            user.save()
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return render(request, 'portfolio/home.html')
+    else:
+        form = UserForm()
+    return render(request, 'registration/signup.html', {'form': form})
 
 @login_required
 def customer_list(request):
